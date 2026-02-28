@@ -1,0 +1,35 @@
+name: Dependabot Validate
+
+on:
+  pull_request:
+    paths:
+      - ".github/dependabot.yml"
+      - ".github/workflows/dependabot-validate.yml"
+
+jobs:
+  validate:
+    runs-on: [self-hosted-small]
+    steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GH_ACTIONS_APP_ID }}
+          private-key: ${{ secrets.GH_ACTIONS_PRIVATE_KEY }}
+
+      - name: Git Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Validate Dependabot config
+        uses: marocchino/validate-dependabot@v3
+        id: validate
+
+      - name: Post comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: ${{ success() || failure() || ( always() && ! cancelled() ) }}
+        with:
+          header: validate-dependabot
+          message: ${{ steps.validate.outputs.markdown }}
