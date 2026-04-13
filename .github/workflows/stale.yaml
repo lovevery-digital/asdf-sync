@@ -1,0 +1,10 @@
+name: Close stale issues and PRs
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+jobs:
+  stale:
+    secrets: inherit
+    uses: lovevery-digital/action-devops-misc/.github/workflows/stale.yaml@v2
