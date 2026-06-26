@@ -1,0 +1,19 @@
+name: Dependabot
+
+on:
+  pull_request:
+    paths:
+      - .github/dependabot.yaml
+      - .github/workflows/dependabot.yaml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependabot:
+    uses: lovevery-digital/action-dependabot/.github/workflows/dependabot.yaml@v7
+    with:
+      enable_validate: true
+      enable_auto_merge: false
+    secrets: inherit
